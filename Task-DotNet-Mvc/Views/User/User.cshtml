@@ -1,0 +1,21 @@
+﻿@model IEnumerable<Task_DotNet_Mvc.Models.User>
+<h2>User List</h2>
+<table>
+    <tr>
+        <th>Photo</th>
+        <th>Name</th>
+        <th>Email</th>
+        <th>Mobile Number</th>
+        <th>Password</th>
+    </tr>
+    @foreach (var user in Model)
+    {
+        <tr>
+            <td><img src="@user.Photo" alt="User Photo" /></td>
+            <td>@user.Name</td>
+            <td>@user.Email</td>
+            <td>@user.MobileNumber</td>
+            <td>******</td> <!-- Masked for security -->
+        </tr>
+    }
+</table>

@@ -1,0 +1,85 @@
+﻿@{
+    ViewBag.Title = "Import Users from Excel";
+}
+
+<link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet" />
+
+<div class="container mt-4">
+    <h2 class="text-center">Import Users from Excel</h2>
+
+    <div id="error-message" class="alert alert-danger" style="display:none;"></div>
+
+    <form id="importForm" enctype="multipart/form-data" class="needs-validation" novalidate>
+        <div class="form-group">
+            <label for="file" class="form-label">Select Excel File:</label>
+            <input type="file" name="file" class="form-control" id="file" required accept=".xls,.xlsx" />
+            <div class="invalid-feedback">
+                Please upload a file.
+            </div>
+        </div>
+        <button type="submit" class="btn btn-primary">Upload</button>
+    </form>
+</div>
+
+@section Scripts {
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Enable Bootstrap validation
+        (function () {
+            'use strict';
+            var forms = document.querySelectorAll('.needs-validation');
+            Array.prototype.slice.call(forms)
+                .forEach(function (form) {
+                    form.addEventListener('submit', function (event) {
+                        if (!form.checkValidity()) {
+                            event.preventDefault();
+                            event.stopPropagation();
+                        } else {
+                            event.preventDefault(); // Prevent default form submission
+                            uploadFile(); // Call the upload function
+                        }
+                        form.classList.add('was-validated');
+                    }, false);
+                });
+        })();
+        function uploadFile() {
+            var fileInput = document.getElementById('file');
+            var filePath = fileInput.value;
+            var allowedExtensions = /(\.xls|\.xlsx)$/i;
+
+            // Validate file type
+            if (!allowedExtensions.exec(filePath)) {
+                $('#error-message').text('Please upload a valid Excel file (either .xls or .xlsx).').show();
+                return;
+            }
+
+            // Check file size (50 MB = 50 * 1024 * 1024 bytes)
+            var fileSize = fileInput.files[0].size;
+            if (fileSize > 50 * 1024 * 1024) {
+                $('#error-message').text('The file size exceeds the maximum limit of 50 MB. Please upload a smaller file.').show();
+                return;
+            }
+
+            var formData = new FormData($('#importForm')[0]); // Create FormData object from form
+
+            $.ajax({
+                url: '/User/ImportExcel',
+                type: 'POST',
+                data: formData,
+                contentType: false, // Set to false to tell jQuery not to set content type
+                processData: false, // Prevent jQuery from automatically transforming the data into a query string
+                success: function (response) {
+                    debugger
+                    // Handle success, e.g., redirect to UserList or display a success message
+                    window.location.href = '/User/UserList'; // Redirect to the user list after successful upload
+                },
+                error: function (xhr, status, error) {
+                    // Handle error
+                    var errorMessage = xhr.responseJSON && xhr.responseJSON.message ? xhr.responseJSON.message : 'An error occurred while uploading the file.';
+                    $('#error-message').text(errorMessage).show();
+                }
+            });
+        }
+    </script>
+}

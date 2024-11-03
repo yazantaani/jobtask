@@ -1,0 +1,51 @@
+﻿@model IEnumerable<Task_DotNet_Mvc.Models.User>
+
+@{
+    ViewBag.Title = "User List";
+}
+
+<link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet" />
+
+<div class="container mt-4">
+    <h2 class="text-center">User List</h2>
+
+    @if (!Model.Any())
+    {
+        <div class="alert alert-info text-center">
+            No users found.
+        </div>
+    }
+    else
+    {
+        <table class="table table-striped">
+            <thead class="thead-dark">
+                <tr>
+                    <th>ID</th>
+                    <th>Name</th>
+                    <th>Email</th>
+                    <th>Mobile Number</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var user in Model)
+                {
+                    <tr>
+                        <td>@user.Id</td> <!-- Assuming UserId is the property for ID -->
+                        <td>@user.Name</td>
+                        <td>@user.Email</td>
+                        <td>@user.MobileNumber</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    }
+
+    <div class="text-center">
+        <a href="@Url.Action("AddUser", "User")" class="btn btn-primary">Add User</a>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.2/dist/js/bootstrap.bundle.min.js"></script>
+}
